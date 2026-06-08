@@ -90,7 +90,7 @@ function SessionApp({
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
-            className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
+            className="fixed inset-0 z-[300] flex items-center justify-center pointer-events-none"
           >
             <div className="bg-pink-600 text-white rounded-3xl px-8 py-6 shadow-2xl text-center">
               <div className="text-5xl">💕</div>

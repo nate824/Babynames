@@ -22,19 +22,33 @@ export default function SetupPage({ onReady }: Props) {
   function handleSaveConfig() {
     setCfgError(null);
     try {
-      // Accept either raw JSON or a JS-style firebaseConfig object copy/pasted from Firebase console.
-      const cleaned = cfgText
-        .replace(/^\s*const\s+firebaseConfig\s*=\s*/, "")
-        .replace(/;\s*$/, "")
-        .trim();
-      const cfg = JSON.parse(
-        // tolerate single quotes and unquoted keys from Firebase's snippet
-        cleaned
-          .replace(/([{,]\s*)([a-zA-Z0-9_]+)\s*:/g, '$1"$2":')
-          .replace(/'/g, '"')
-      ) as FirebaseConfig;
+      // The Firebase console snippet has `import ...`, `const firebaseConfig = {...}`,
+      // and trailing `initializeApp()` calls. Extract just the `{...}` config object.
+      const start = cfgText.indexOf("{");
+      if (start === -1) throw new Error("Couldn't find a config object — make sure you copied the whole `firebaseConfig` block.");
+      let depth = 0;
+      let end = -1;
+      for (let i = start; i < cfgText.length; i++) {
+        const ch = cfgText[i];
+        if (ch === "{") depth++;
+        else if (ch === "}") {
+          depth--;
+          if (depth === 0) {
+            end = i;
+            break;
+          }
+        }
+      }
+      if (end === -1) throw new Error("Couldn't find the end of the config object — looks truncated.");
+      const block = cfgText.substring(start, end + 1);
+      // Convert JS object literal to JSON: quote unquoted keys, normalize quotes, strip trailing commas.
+      const json = block
+        .replace(/([{,]\s*)([a-zA-Z0-9_]+)\s*:/g, '$1"$2":')
+        .replace(/'/g, '"')
+        .replace(/,(\s*[}\]])/g, "$1");
+      const cfg = JSON.parse(json) as FirebaseConfig;
       if (!cfg.apiKey || !cfg.projectId || !cfg.appId) {
-        throw new Error("Missing apiKey, projectId, or appId.");
+        throw new Error("Config is missing apiKey, projectId, or appId.");
       }
       saveFirebaseConfig(cfg);
       setShowCfg(false);

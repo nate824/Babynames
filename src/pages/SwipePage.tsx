@@ -81,8 +81,8 @@ export default function SwipePage({ session, store, onOpenMatches, onSignOut }: 
   const seenCount = store.myLikes.size + store.myDislikes.size;
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="px-4 py-3 flex items-center justify-between bg-white/60 backdrop-blur border-b border-pink-100">
+    <div className="h-screen h-[100dvh] flex flex-col overflow-hidden">
+      <header className="px-4 py-3 flex items-center justify-between bg-white/60 backdrop-blur border-b border-pink-100 shrink-0">
         <div>
           <div className="font-display text-2xl font-bold text-pink-700 leading-none">
             Baby Names
@@ -115,7 +115,7 @@ export default function SwipePage({ session, store, onOpenMatches, onSignOut }: 
         </div>
       </header>
 
-      <div className="px-4 py-2 flex gap-2 overflow-x-auto items-center">
+      <div className="px-4 py-2 flex gap-2 overflow-x-auto items-center shrink-0">
         {(Object.keys(FILTER_LABELS) as Filter[]).map((f) => (
           <button
             key={f}
@@ -139,8 +139,8 @@ export default function SwipePage({ session, store, onOpenMatches, onSignOut }: 
         </div>
       </div>
 
-      <main className="flex-1 px-4 pb-4 flex items-center justify-center">
-        <div className="relative w-full max-w-sm aspect-[3/4]">
+      <main className="flex-1 min-h-0 px-4 pb-2 pt-2 flex justify-center">
+        <div className="relative w-full max-w-sm h-full max-h-[720px]">
           <SwipeDeck
             queue={queue}
             onSwipe={(name, liked) => store.swipe(name.id, liked)}
@@ -148,7 +148,7 @@ export default function SwipePage({ session, store, onOpenMatches, onSignOut }: 
         </div>
       </main>
 
-      <footer className="px-4 pb-6 pt-2 flex justify-center gap-6">
+      <footer className="px-4 pb-4 pt-2 flex justify-center gap-6 shrink-0">
         <button
           aria-label="Skip"
           onClick={() => {
@@ -227,7 +227,7 @@ function SuggestSheet({ session, store, onClose }: SuggestSheetProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-40 bg-black/40 flex items-end sm:items-center justify-center"
+      className="fixed inset-0 z-[200] bg-black/40 flex items-end sm:items-center justify-center"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
